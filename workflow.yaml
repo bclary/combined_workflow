@@ -1,0 +1,13 @@
+- arguments:
+    project_name: mozilla-docker-build-edwin
+  project: existing
+- action: set_project_framework
+  arguments:
+    framework_name: Docker image build
+- action: upload_file
+  arguments:
+    application_filename: /Users/egao/Downloads/ignore.apk
+    test_filename: /Users/egao/workspace/combined_workflow_demo/mozilla_bitbar_docker/build/mozilla-docker-20190115T150528.zip
+- action: set_device
+  arguments:
+    device_name: Docker Builder
