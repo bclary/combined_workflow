@@ -17,13 +17,14 @@ from testdroid import Testdroid
 mozbitbar_repo = 'https://github.com/worldomonation/mozbitbar.git'
 mozilla_docker_repo = 'https://github.com/bclary/mozilla-bitbar-docker.git'
 clone_base_dir = os.path.dirname(os.path.abspath(__file__))
+mozbitbar_dir = os.path.join(clone_base_dir, 'mozbitbar/mozbitbar')
 args, remainder = None, None
 
 logger = logging.getLogger('mozbitbar')
 
 
 def handle_cli(argv):
-    sys.path.insert(0, os.path.join(clone_base_dir, 'mozbitbar/mozbitbar'))
+    sys.path.insert(0, mozbitbar_dir)
     cli_handler = import_module('cli', package='mozbitbar')
     global args, remainder
     args, remainder = cli_handler.parse_arguments(argv)
@@ -108,28 +109,34 @@ def _find_action_in_recipe(action, recipe):
 
 
 def update_test_file_name():
-    if os.path.isdir(os.path.join(clone_base_dir, 'mozilla_bitbar_docker', 'build')):
+    build_dir = os.path.join(clone_base_dir, 'mozilla_bitbar_docker', 'build')
+    if os.path.isdir(build_dir):
         # under current naming scheme of zip files, reverse order sort will
         # place the newest archives first
-        build_dir = os.path.join(
-            clone_base_dir, 'mozilla_bitbar_docker', 'build')
         files = os.listdir(build_dir)
         files.sort(reverse=True)
         if len(files) > 2:
             files = files[:2]
 
-        public_file = os.path.join(build_dir, [f for f in files if 'public' in f].pop())
-        private_file = os.path.join(build_dir, [f for f in files if 'public' not in f].pop())
+        public_file = os.path.join(
+            build_dir, [f for f in files if 'public' in f].pop()
+        )
+        private_file = os.path.join(
+            build_dir, [f for f in files if 'public' not in f].pop()
+        )
     else:
-        print('Archive directory "build" not found on disk.')
+        logger.critical('Archive directory "build" not found on disk.')
         sys.exit(1)
 
     recipe = _load_recipe()
+    logger.debug('Recipe found: {}'.format(args.recipe))
     index = _find_action_in_recipe('upload_file', recipe)
 
     if index:
+        logger.debug('Recipe: upload file action found.')
         recipe[index]['arguments']['test_filename'] = private_file
     else:
+        logger.debug('Recipe: upload file action not found.')
         action = {
             'action': 'upload_file',
             'arguments': {
@@ -142,15 +149,16 @@ def update_test_file_name():
 
 
 def build_image_on_bitbar():
-    main_obj = import_module('main', package='mozbitbar')
-    main_obj.main()
+    logger.debug('Run mozbitbar recipe parser.')
+    recipe_handler = import_module('recipe_handler', package='mozbitbar')
+    recipe_handler.run_recipe(args.recipe)
 
 
 def run(argv):
-    # clone_repository()
+    clone_repository()
     handle_cli(argv)
-    # setup_logger()
-    # build_test_archive()
+    setup_logger()
+    build_test_archive()
     update_test_file_name()
     build_image_on_bitbar()
 
