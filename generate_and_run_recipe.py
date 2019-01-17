@@ -9,10 +9,10 @@ import os
 import shutil
 import subprocess
 import sys
-from importlib import import_module
 
 import yaml
-from testdroid import Testdroid
+
+from mozbitbar import cli, log, recipe_handler
 
 mozbitbar_repo = 'https://github.com/worldomonation/mozbitbar.git'
 mozilla_docker_repo = 'https://github.com/bclary/mozilla-bitbar-docker.git'
@@ -25,13 +25,11 @@ logger = logging.getLogger('mozbitbar')
 
 def handle_cli(argv):
     sys.path.insert(0, mozbitbar_dir)
-    cli_handler = import_module('cli', package='mozbitbar')
     global args, remainder
-    args, remainder = cli_handler.parse_arguments(argv)
+    args, remainder = cli.parse_arguments(argv)
 
 
 def setup_logger():
-    log = import_module('log', package='mozbitbar')
     log.setup_logger(**vars(args))
     logger.info('Logging started')
 
@@ -150,7 +148,6 @@ def update_test_file_name():
 
 def build_image_on_bitbar():
     logger.debug('Run mozbitbar recipe parser.')
-    recipe_handler = import_module('recipe_handler', package='mozbitbar')
     recipe_handler.run_recipe(args.recipe)
 
 
