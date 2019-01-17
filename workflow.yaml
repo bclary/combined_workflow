@@ -6,8 +6,8 @@
     framework_name: Docker image build
 - action: upload_file
   arguments:
-    application_filename: /Users/egao/Downloads/ignore.apk
-    test_filename: /Users/egao/workspace/combined_workflow_demo/mozilla_bitbar_docker/build/mozilla-docker-20190116T111234.zip
+    application_filename: dummy.apk
+    test_filename: dummy.zip
 - action: set_device
   arguments:
     device_name: Docker Builder
