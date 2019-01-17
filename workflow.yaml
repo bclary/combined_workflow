@@ -3,11 +3,11 @@
   project: existing
 - action: set_project_framework
   arguments:
-    framework_name: Docker image build
+    framework: Docker image build
 - action: upload_file
   arguments:
     application_filename: dummy.apk
     test_filename: dummy.zip
 - action: set_device
   arguments:
-    device_name: Docker Builder
+    device: Docker Builder
