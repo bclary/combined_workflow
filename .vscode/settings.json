@@ -1,3 +1,11 @@
 {
-    "python.pythonPath": "/Users/egao/virtual_environment/bitbar/bin/python"
+    "python.pythonPath": "/Users/egao/virtual_environment/python27_development/bin/python",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/*.pyc": true
+    }
 }
