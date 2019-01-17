@@ -85,7 +85,7 @@ def build_image_on_bitbar(recipe_path):
 
 def main(argv):
     parser = cli.get_parser()
-    parser.prog = 'generate_and_run_recipe.py'
+    parser.prog = 'create-mozilla-bitbar-image.py'
     parser.description = "Executes Bitbar Docker builder to update mozilla image."
     parser.add_argument('--mozilla-bitbar-docker-dir',
                         required=True,
